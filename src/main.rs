@@ -38,7 +38,7 @@ fn submitted_comment_form(comment_form: Option<CommentForm>) -> impl IntoView {
     })
 }
 
-/// A sample comment form, which pushes up an on_save event with the form data.
+/// A sample comment form, which pushes up an on_submit event with the form data.
 fn comment_form(on_submit: impl Fn(CommentForm) + 'static) -> impl IntoView {
     let comment = RwSignal::new("".to_string());
 
