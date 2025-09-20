@@ -21,19 +21,20 @@ fn app() -> impl IntoView {
     div().child((
         h1().child("A sample form"),
         // The event pushed up is being used to set a signal directly,
-        // although instead it would more likely do an API call, the results setting the signal
+        // although instead it would more likely do an API call, the results setting the signal.
         comment_form(move |e| comment_form_data.set(Some(e))),
+        // When calling components, always move before, then get. static data only.
         move || submitted_comment_form(comment_form_data.get()),
     ))
 }
 
-/// An example of a show if component. Don't pass signals for static components, use move in the level above.
+/// An example of a show if component. Don't pass signals for components, use move in the level above.
 /// This makes testing and debugging much easier.
 fn submitted_comment_form(comment_form: Option<CommentForm>) -> impl IntoView {
     comment_form.map(|cf| {
-        div().child(format!(
-            "Submitted Comment: {}, Likes: {}",
-            cf.comment, cf.likes
+        div().child((
+            hr(),
+            format!("Submitted Comment: {}, Likes: {}", cf.comment, cf.likes),
         ))
     })
 }
