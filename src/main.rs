@@ -60,7 +60,7 @@ fn comment_form(on_submit: impl Fn(CommentForm) + 'static) -> impl IntoView {
                 .attr("type", "number")
                 .bind(Value, likes)
                 .placeholder("number of likes"),
-            button().attr("type", "submit").child("Save"),
+            button().attr("type", "submit").child("Submit"),
         )),
     )
 }
