@@ -5,30 +5,39 @@ use leptos::{
     prelude::*,
 };
 
-fn main() {
-    leptos::mount::mount_to_body(|| app())
-}
-
-fn app() -> impl IntoView {
-    let comment_form = RwSignal::new(None);
-
-    div().child((form_1(move |e| comment_form.set(Some(e))), move || {
-        show_submitted_comment_form(comment_form.get())
-    }))
-}
-
-fn show_submitted_comment_form(comment_form: Option<CommentForm>) -> impl IntoView {
-    comment_form.map(|cf| div().child(format!("Comment: {}, Likes: {}", cf.comment, cf.likes)))
-}
-
 #[derive(Clone, Debug)]
 struct CommentForm {
     comment: String,
     likes: i32,
 }
 
-fn form_1(on_save: impl Fn(CommentForm) + 'static) -> impl IntoView {
+fn main() {
+    leptos::mount::mount_to_body(|| app())
+}
+
+fn app() -> impl IntoView {
+    let comment_form_data = RwSignal::new(None);
+
+    div().child((
+        h1().child("A sample form"),
+        // The event pushed up is being used to set a signal directly,
+        // although instead it would more likely do an API call, the results setting the signal
+        comment_form(move |e| comment_form_data.set(Some(e))),
+        move || submitted_comment_form(comment_form_data.get()),
+    ))
+}
+
+/// An example of a show if component. Don't pass signals for static components, use move in the level above.
+/// This makes testing and debugging much easier.
+fn submitted_comment_form(comment_form: Option<CommentForm>) -> impl IntoView {
+    comment_form.map(|cf| div().child(format!("Comment: {}, Likes: {}", cf.comment, cf.likes)))
+}
+
+/// A sample comment form, which pushes up an on_save event with the form data.
+fn comment_form(on_save: impl Fn(CommentForm) + 'static) -> impl IntoView {
     let comment = RwSignal::new("".to_string());
+
+    // The browser seems to demand strings, no numbers.
     let likes = RwSignal::new("".to_string());
 
     let on_submit = move |ev: SubmitEvent| {
